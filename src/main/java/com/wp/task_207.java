@@ -11,8 +11,8 @@ import java.util.*;
 public class task_207 {
 
     public static void main( String[] args ) {
-        int[][] prerequisites = {{0,1},{0,2},{1,2},{2,1}};
-        System.out.println( canFinish( 3, prerequisites ) );
+        int[][] prerequisites = {{1,0}};
+        System.out.println( canFinish2( 2, prerequisites ) );
     }
 
     public static boolean canFinish(int numCourses, int[][] prerequisites) {
@@ -52,4 +52,47 @@ public class task_207 {
         }
         return true;
     }
+
+    //
+    public static boolean canFinish2(int numCourses, int[][] prerequisites) {
+        Map<Integer,List<Integer>> map = new HashMap<>(numCourses);
+        int[] preArray = new int[numCourses];
+        for (int[] prerequisite : prerequisites) {
+            int key = prerequisite[1];
+            int val = prerequisite[0];
+            List<Integer> orDefault = map.getOrDefault( key, new ArrayList<>() );
+            orDefault.add( val );
+            map.put( key,orDefault );
+            preArray[val] += 1;
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < preArray.length; i++) {
+            if (preArray[i]==0) {
+                queue.offer( i );
+            }
+        }
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Integer poll = queue.poll();
+                System.out.println(poll);
+                List<Integer> list = map.get( poll );
+                if (null!=list) {
+                    for (Integer offset : list) {
+                        preArray[offset] -= 1;
+                        if (preArray[offset]==0) {
+                            queue.offer( offset );
+                        }
+                    }
+                }
+            }
+        }
+        for (int i : preArray) {
+            if (i!=0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
