@@ -1,5 +1,8 @@
 package com.wp;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author: wp
  * @Title: task_10  10. 正则表达式匹配
@@ -9,53 +12,72 @@ package com.wp;
 public class task_10 {
 
     public static void main( String[] args ) {
-        String s = "aabcbcbcaccbcaabc";
-        String p = ".*a*aa*.*b*.c*.*a*";
+        /*String s = "aabcbcbcaccbcaabc";
+        String p = ".*a*aa*.*b*.c*.*a*";*/
+        s = "aab";
+        p = "c*a*b";
         System.out.println( isMatch( s, p ) );
     }
 
 
-    public static boolean isMatch(String s, String p) {
-        char[] targetArray = s.toCharArray();
-        char[] patternArray = p.toCharArray();
-        int tIndex = 0;
-        int pIndex = 0;
-        return recursionMatch(targetArray, tIndex, patternArray, pIndex);
+    static String s;
+    static String p;
+    static int[][] memo;
+    static int Y = 1, N = -1, EMPTY = 0;
+
+    public static boolean isMatch( String s, String p ) {
+        memo = new int[s.length() + 1][p.length() + 1];
+        return isMatch(0, 0) == Y;
     }
 
-    public static boolean isMatchChar(char[] s, int s1, char[] p, int p1) {
-        if(p1 >= p.length) return s1 >= s.length;
-        boolean match = s1 < s.length && ((s[s1] == p[p1]) || p[p1] == '.');
-        if(p.length - p1 >= 2 && p[p1 + 1] == '*')
-            return isMatchChar(s, s1, p, p1 + 2) || (match && isMatchChar(s, s1 + 1, p, p1));
-        return match && isMatchChar(s, s1 + 1, p, p1 + 1);
-    }
-
-
-    private static boolean recursionMatch( char[] targetArray, int tIndex, char[] patternArray, int pIndex ) {
-        if (pIndex >= patternArray.length && tIndex>=targetArray.length) {
-            return true;
+    public static int isMatch(int sIdx, int pIdx) {
+        if (sIdx > s.length() || pIdx > p.length()) {
+            return N;
+        }
+        if (memo[sIdx][pIdx] != EMPTY) {
+            return memo[sIdx][pIdx];
+        }
+        if (sIdx == s.length() && pIdx == p.length()) {
+            memo[sIdx][pIdx] = Y;
+            return memo[sIdx][pIdx];
+        }
+        if (pIdx == p.length() && sIdx < s.length()) {
+            memo[sIdx][pIdx] = N;
+            return memo[sIdx][pIdx];
         }
 
-        if (pIndex+1<patternArray.length && patternArray[pIndex+1]=='*') {
-            if (tIndex>=targetArray.length) {
-                return false;
-            }else if (targetArray[tIndex]==patternArray[pIndex] || patternArray[pIndex]=='.') {
-                boolean res = true;
-                res = recursionMatch( targetArray,tIndex+1,patternArray,pIndex );
-                return res || recursionMatch( targetArray,tIndex,patternArray,pIndex+2 );
-            }else{
-                return recursionMatch( targetArray, tIndex, patternArray,pIndex+2 );
+        if (pIdx + 1 < p.length() && p.charAt(pIdx + 1) == '*') {
+            if (p.charAt(pIdx) == '.') {
+                for (int i = sIdx; i <= s.length(); i++) {
+                    if (Y == isMatch(i, pIdx + 2)) {
+                        memo[sIdx][pIdx] = Y;
+                        return memo[sIdx][pIdx];
+                    }
+                }
+            } else {
+                for (int i = sIdx; i <= s.length(); i++) {
+                    if (Y == isMatch(i, pIdx + 2)) {
+                        memo[sIdx][pIdx] = Y;
+                        return memo[sIdx][pIdx];
+                    }
+                    if (i < s.length() && s.charAt(i) != p.charAt(pIdx)) {
+                        break;
+                    }
+                }
             }
-        }else{
-            if (tIndex>=targetArray.length || pIndex>=patternArray.length) {
-                return false;
-            }else if (targetArray[tIndex]==patternArray[pIndex] || patternArray[pIndex]=='.') {
-                return recursionMatch( targetArray,tIndex+1,patternArray,pIndex+1 );
-            }else{
-                return false;
+            memo[sIdx][pIdx] = N;
+            return memo[sIdx][pIdx];
+        }
+
+        if (pIdx < p.length()) {
+            if ((p.charAt(pIdx) == '.') || (sIdx < s.length() && s.charAt(sIdx) == p.charAt(pIdx))) {
+                memo[sIdx][pIdx] = isMatch(sIdx + 1, pIdx + 1);
+                return memo[sIdx][pIdx];
             }
         }
+        memo[sIdx][pIdx] = N;
+        return memo[sIdx][pIdx];
     }
+
 
 }
