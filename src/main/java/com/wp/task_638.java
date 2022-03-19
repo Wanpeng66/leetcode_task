@@ -57,7 +57,7 @@ public class task_638 {
         }
         long[] total = {Long.MAX_VALUE};
         ArrayList<Integer> cNeeds = new ArrayList();
-        Map<String,Long> map = new HashMap<>();
+        Map<ArrayList<Integer>,Long> map = new HashMap<>();
         for (int i = 0; i < size; i++) {
             cNeeds.add( i,0 );
         }
@@ -65,7 +65,7 @@ public class task_638 {
         return (int) total[0];
     }
 
-    private static void shoppingOffers(  List<List<Integer>> special, List<Integer> needs,long currentSum,ArrayList<Integer> cNeeds,long[] total, List<List<Integer>> cPolicy,Map<String,Long> map ) {
+    private static void shoppingOffers(  List<List<Integer>> special, List<Integer> needs,long currentSum,ArrayList<Integer> cNeeds,long[] total, List<List<Integer>> cPolicy,Map<ArrayList<Integer>,Long> map ) {
         boolean isDone = true;
         for (int i = cNeeds.size() - 1; i >= 0; i--) {
             if (cNeeds.get( i )!=needs.get( i )) {
@@ -97,11 +97,10 @@ public class task_638 {
                     cNeeds.set( j,cNeeds.get( j )+list.get( j ) );
                 }
                 currentSum += list.get( list.size()-1 );
-                String key = cNeeds.toString();
-                if (!map.containsKey( key) || map.get( key )>currentSum) {
+                if (!map.containsKey( cNeeds) || map.get( cNeeds )>currentSum) {
                     int size = cPolicy.size();
                     cPolicy.add( size,list );
-                    map.put( key,currentSum );
+                    map.put( cNeeds,currentSum );
                     shoppingOffers( special,needs,currentSum,cNeeds,total,cPolicy,map );
                     cPolicy.remove( size );
                 }
