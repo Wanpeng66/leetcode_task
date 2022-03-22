@@ -97,7 +97,11 @@ public class GuardedObject<T> {
         try{
             while (!predicate.test( res )) {
                 System.out.println(name+"等待答案...");
-                notDone.await(1,TimeUnit.SECONDS);
+                if (getTimeOut()!=-1) {
+                    notDone.await(getTimeOut(),TimeUnit.MILLISECONDS);
+                }else{
+                    notDone.await();
+                }
                 long now = System.currentTimeMillis();
                 if ( timeOut!=-1 && !predicate.test( res ) && now-start>timeOut ) {
                     isTimeOut = true;
@@ -128,7 +132,7 @@ public class GuardedObject<T> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            GuardedObject guardedObject = GuardedObject.create( key, 3000 );
+            GuardedObject guardedObject = GuardedObject.create( key, 6000 );
             Object res = guardedObject.get( Objects :: nonNull );
             System.out.println(name+"线程拿到结果:"+res);
             latch.countDown();
