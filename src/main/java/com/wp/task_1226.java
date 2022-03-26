@@ -1,5 +1,8 @@
 package com.wp;
 
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.StringUtils;
+
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -48,10 +51,11 @@ class DiningPhilosophers {
         ReentrantLock[] forks = forkArray[philosopher];
         ReentrantLock leftFork = forks[0];
         ReentrantLock rightFork = forks[1];
-        while (!leftFork.tryLock( new Random().nextInt( 100 ) + 1, TimeUnit.MILLISECONDS )) {
-
-        }
-        while (!rightFork.tryLock( new Random().nextInt( 100 ) + 1, TimeUnit.MILLISECONDS )) {
+        while (!leftFork.tryLock( new Random().nextInt( 100 ) + 1, TimeUnit.MILLISECONDS )
+                || !rightFork.tryLock( new Random().nextInt( 100 ) + 1, TimeUnit.MILLISECONDS )) {
+            if (leftFork.isHeldByCurrentThread()) {
+                leftFork.unlock();
+            }
         }
         //开始吃
         pickLeftFork.run();
