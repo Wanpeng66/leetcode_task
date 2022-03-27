@@ -34,7 +34,6 @@ public class task_40 {
         if (i>=candidates.length) {
             return;
         }
-
         //每一个元素都有两种决策
         //不选择下标为i的元素
         sum( candidates,target,i+1,sum,integers,result,cache );

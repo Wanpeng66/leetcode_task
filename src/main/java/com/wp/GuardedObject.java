@@ -17,22 +17,7 @@ import java.util.function.Predicate;
 public class GuardedObject<T> {
 
     static Map<Object,GuardedObject> map = new ConcurrentHashMap<>();
-    static Timer timer;
-    static {
-        timer = new Timer();
-        timer.schedule( new TimerTask() {
-            @Override
-            public void run() {
-                Iterator<Map.Entry<Object, GuardedObject>> iterator = map.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<Object, GuardedObject> next = iterator.next();
-                    if (false) {
-                        iterator.remove();
-                    }
-                }
-            }
-        },2000,2000 );
-    }
+
     private T res = null;
     private final Lock lock;
     private final Condition notDone;
@@ -86,6 +71,7 @@ public class GuardedObject<T> {
         lock.lock();
         guardedObject.setRes( res );
         guardedObject.getNotDone().signalAll();
+        map.remove( guardedObject );
         lock.unlock();
     }
 
@@ -135,6 +121,7 @@ public class GuardedObject<T> {
             GuardedObject guardedObject = GuardedObject.create( key, 6000 );
             Object res = guardedObject.get( Objects :: nonNull );
             System.out.println(name+"线程拿到结果:"+res);
+
             latch.countDown();
         };
         Runnable answerTask = () -> {
@@ -164,7 +151,6 @@ public class GuardedObject<T> {
         threadPool.submit( answerTask );
         threadPool.shutdown();
         latch.await();
-        GuardedObject.timer.cancel();
         System.out.println("done......");
     }
 
