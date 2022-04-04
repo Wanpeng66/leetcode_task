@@ -48,7 +48,6 @@ public class Trie {
         return node.isEndChar;
     }
 
-
     class TrieNode{
         Character val;
         Map<Character,TrieNode> map;
