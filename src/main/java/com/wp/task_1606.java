@@ -4,8 +4,8 @@ import java.util.*;
 
 /**
  * @author: wp
- * @Title: task_1606
- * @Description:
+ * @Title: task_1606  1606. 找到处理最多请求的服务器
+ * @Description: https://leetcode-cn.com/problems/find-servers-that-handled-most-number-of-requests/
  * @date 2022/3/30 20:16
  */
 public class task_1606 {
