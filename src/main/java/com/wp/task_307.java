@@ -1,6 +1,5 @@
 package com.wp;
 
-import java.util.zip.CRC32;
 
 /**
  * @author: wp
