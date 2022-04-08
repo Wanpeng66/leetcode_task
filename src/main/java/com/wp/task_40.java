@@ -19,15 +19,37 @@ public class task_40 {
     }
     public static List<List<Integer>> combinationSum2( int[] candidates, int target) {
         Arrays.sort(candidates);
-        List<List<Integer>> result = new ArrayList<>();
-        Map<String,Boolean> cache = new HashMap<>();
+        Set<List<Integer>> result = new HashSet<>();
+        Map<Integer,HashSet<Integer>> cache = new HashMap<>();
+        //dfs(candidates, target, 0, 0, new ArrayList<>(), result);
         sum(candidates,target,0,0,new ArrayList<>(),result,cache);
         return new ArrayList<>(result);
     }
 
-    private static void sum( int[] candidates, int target, int i, int sum, ArrayList<Integer> integers, List<List<Integer>> result,Map<String,Boolean> cache) {
-        if (sum==target && !cache.containsKey( integers.toString() )) {
-            cache.put( integers.toString(),true );
+    private static void dfs( int[] candidates, int target, int i, int sum, ArrayList<Integer> list, Set<List<Integer>> result) {
+        if (sum==target) {
+            result.add( new ArrayList<>(list) );
+            return;
+        }
+        for (int j = i; j < candidates.length; j++) {
+            if ( sum + candidates[j] > target) {
+                continue;
+            }
+            if ( j>0 && candidates[j]!=candidates[j-1]) {
+                list.add( candidates[j] );
+                dfs( candidates, target, j+1, sum+candidates[j], list, result );
+                list.remove( list.size()-1 );
+            }
+        }
+    }
+
+    private static void sum( int[] candidates, int target, int i, int sum, ArrayList<Integer> integers, Set<List<Integer>> result,Map<Integer,HashSet<Integer>> cache) {
+        if (sum==target) {
+            for (int j = 0; j < integers.size(); j++) {
+                HashSet<Integer> set = cache.getOrDefault( j, new HashSet<>() );
+                set.add( integers.get( j ) );
+                cache.put( j, set );
+            }
             result.add( new ArrayList<>( integers ) );
             return;
         }
@@ -39,7 +61,8 @@ public class task_40 {
         sum( candidates,target,i+1,sum,integers,result,cache );
         //选择下标为i的元素
         int num = candidates[i];
-        if (sum+ num <=target) {
+        HashSet<Integer> set = cache.get( integers.size() - 1 );
+        if (sum+ num <=target && (null==set || !set.contains( num ))) {
             integers.add( num );
             sum( candidates,target,i+1,sum+num,integers,result,cache );
             integers.remove( integers.size()-1 );
