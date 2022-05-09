@@ -24,6 +24,49 @@ public class ExcelUtil {
     public static void main( String[] args ) throws IOException {
         extractJcfw();
     }
+    public static void extractJcbz(){
+        ExcelReader excelReader = cn.hutool.poi.excel.ExcelUtil.getReader( "C:\\Users\\wp\\Desktop\\质量检测场景数据分享测试-2022.04.20\\检测标准信息.xlsx" );
+        List<Map<String, Object>> maps = excelReader.readAll();
+        Set<String> set = new HashSet<>();
+        Iterator<Map<String, Object>> iterator = maps.iterator();
+        big:while (iterator.hasNext()) {
+            Map<String, Object> map = iterator.next();
+            String id = "";
+            Set<String> keySet = map.keySet();
+            Iterator<String> keyIter = keySet.iterator();
+            while (keyIter.hasNext()) {
+                String key = keyIter.next();
+                if (key.equals( "机构名称" )) {
+                    String name = (String) map.get( key );
+                    id = Base64.getEncoder().encodeToString( name.getBytes() );
+                    if (set.contains( name )) {
+                        iterator.remove();
+                        continue big;
+                    }
+
+                    set.add( name );
+                }
+                if (!(key.equals( "机构地址" ) || key.equals( "机构简介" ) || key.equals( "机构名称" ) || key.equals( "机构联系方式" ))) {
+                    keyIter.remove();
+                }
+            }
+            map.put( "id",id );
+        }
+        iterator = maps.iterator();
+        while (iterator.hasNext()) {
+            Map<String, Object> map = iterator.next();
+            map.put( "jgdz",map.get( "机构地址" ) );
+            map.remove( "机构地址" );
+            map.put( "jgjj",map.get( "机构简介" ) );
+            map.remove( "机构简介" );
+            map.put( "jgmc",map.get( "机构名称" ) );
+            map.remove( "机构名称" );
+            map.put( "jglxfs",map.get( "机构联系方式" ) );
+            map.remove( "机构联系方式" );
+        }
+        File file = FileUtil.newFile( "C:\\Users\\wp\\Desktop\\质量检测场景数据分享测试-2022.04.20\\jcjg.json" );
+        FileUtil.appendString( JSONArray.toJSONString( maps ), file, "utf-8" );
+    }
     public static void extractJcjg(){
         ExcelReader excelReader = cn.hutool.poi.excel.ExcelUtil.getReader( "C:\\Users\\wp\\Desktop\\质量检测场景数据分享测试-2022.04.20\\检测服务与检测机构.xlsx" );
         List<Map<String, Object>> maps = excelReader.readAll();
