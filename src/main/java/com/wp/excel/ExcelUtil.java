@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class ExcelUtil {
     public static void main( String[] args ) throws IOException {
-        extractJcfw();
+        extractYqsb();
     }
     public static void extractJcbz(){
         ExcelReader excelReader = cn.hutool.poi.excel.ExcelUtil.getReader( "C:\\Users\\wp\\Desktop\\质量检测场景数据分享测试-2022.04.20\\检测标准信息.xlsx" );
@@ -130,6 +130,7 @@ public class ExcelUtil {
             } catch (Exception e) {
                 continue;
             }
+            map.put( "sbje", i );
             map.put( "cjjwd",geo.getDoubleValue( "lat" )+","+geo.getDoubleValue( "lng" ) );
             map.put( "id", map.get( "sbmc" ).toString().concat( "(" ).concat( map.get( "xhgg" ).toString() ).concat( ")" ));
         }
