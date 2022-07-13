@@ -48,6 +48,20 @@ public class Trie {
         return node.isEndChar;
     }
 
+    public String findPrefix(String str){
+        StringBuilder sb = new StringBuilder();
+        char[] chars = str.toCharArray();
+        TrieNode node = root;
+        for (char aChar : chars) {
+            Map<Character, TrieNode> map = node.getMap();
+            if (map.containsKey( aChar )) {
+                node  = map.get( aChar );
+                sb.append( aChar );
+            }
+        }
+        return node.isEndChar?sb.toString():null;
+    }
+
     class TrieNode{
         Character val;
         Map<Character,TrieNode> map;
