@@ -15,13 +15,19 @@ public class task_745 {
     public static void main( String[] args ) {
         String str = FileUtil.readString( "C:\\Users\\plantdata-nb-0001\\Desktop\\test.txt", "utf-8" );
         JSONArray array = JSONArray.parseArray( str );
-        String[] words = new String[array.size()];
-        for (int i = 0; i < array.size(); i++) {
-            String val = array.getString( i );
+        JSONArray dic = array.getJSONArray( 0 );
+        String[] words = new String[dic.size()];
+        for (int i = 0; i < dic.size(); i++) {
+            String val = dic.getString( i );
             words[i] = val;
         }
         WordFilter wordFilter = new WordFilter( words );
-        System.out.println( wordFilter.f( "f","f" ) );
+        for (int i = 1; i < array.size(); i++) {
+            JSONArray params = array.getJSONArray( i );
+            int f = wordFilter.f( params.getString( 0 ), params.getString( 1 ) );
+            System.out.println(i+"---->"+f);
+        }
+        System.out.println("end...");
     }
     static class WordFilter {
         Map<String, Set<Integer>> prefixMap;
