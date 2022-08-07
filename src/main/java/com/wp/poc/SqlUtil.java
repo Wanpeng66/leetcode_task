@@ -152,7 +152,7 @@ public class SqlUtil {
     }
 
     public static void main( String[] args ) throws Exception {
-        String sql = "select * from channel_dim limit 200";
+        String sql = "select * from INFORMATION_SCHEMA.\"TABLES\" where \"TABLE_SCHEMA\" = 'poc'";
         String username = "spd";
         String password = "spd@123456";
         JSONObject data = executeSql( username, password, sql, new String[]{"poc"} );

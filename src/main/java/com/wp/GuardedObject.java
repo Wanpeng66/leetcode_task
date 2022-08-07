@@ -71,7 +71,7 @@ public class GuardedObject<T> {
         lock.lock();
         guardedObject.setRes( res );
         guardedObject.getNotDone().signalAll();
-        map.remove( guardedObject );
+        map.values().remove( guardedObject );
         lock.unlock();
     }
 
@@ -83,11 +83,7 @@ public class GuardedObject<T> {
         try{
             while (!predicate.test( res )) {
                 System.out.println(name+"等待答案...");
-                if (getTimeOut()!=-1) {
-                    notDone.await(getTimeOut(),TimeUnit.MILLISECONDS);
-                }else{
-                    notDone.await();
-                }
+                notDone.await(100,TimeUnit.MILLISECONDS);
                 long now = System.currentTimeMillis();
                 if ( timeOut!=-1 && !predicate.test( res ) && now-start>timeOut ) {
                     isTimeOut = true;
@@ -100,6 +96,7 @@ public class GuardedObject<T> {
         }catch(Exception e){
             e.printStackTrace();
         }finally{
+            map.values().remove( this );
             lock.unlock();
         }
         return res;
@@ -118,7 +115,7 @@ public class GuardedObject<T> {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            GuardedObject guardedObject = GuardedObject.create( key, 6000 );
+            GuardedObject guardedObject = GuardedObject.create( key, 2000 );
             Object res = guardedObject.get( Objects :: nonNull );
             System.out.println(name+"线程拿到结果:"+res);
 
@@ -126,7 +123,7 @@ public class GuardedObject<T> {
         };
         Runnable answerTask = () -> {
             try {
-                Thread.sleep( 5000 );
+                Thread.sleep( 3000 );
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -138,11 +135,6 @@ public class GuardedObject<T> {
                     e.printStackTrace();
                 }
                 GuardedObject.onChanged( poll, "key:" + poll + "的结果在此!!!" );
-                try {
-                    Thread.sleep( new Random(5000).nextInt(5000) );
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         };
         for(int i=0;i<5;i++){

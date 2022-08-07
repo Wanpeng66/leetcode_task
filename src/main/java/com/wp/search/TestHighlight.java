@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * @author: wp
  * @Title: TestHighlight
- * @Description: TODO
+ * @Description:
  * @date 2022/3/29 14:40
  */
 public class TestHighlight {
@@ -106,5 +106,21 @@ public class TestHighlight {
 
     private String highlightString( String s, String wildcardValue ) {
         return s.replaceAll( wildcardValue,"<em>"+wildcardValue+"</em>" );
+    }
+
+    public static void main( String[] args ) throws InterruptedException {
+        Thread thread = new Thread( () -> {
+            Thread currentThread = Thread.currentThread();
+            while (!currentThread.isInterrupted()) {
+                System.out.println(currentThread.getName()+"运行中...");
+            }
+            System.out.println(currentThread.getName()+"响应中断...");
+            currentThread.interrupt();
+        } );
+        thread.start();
+        Thread.sleep( 2000 );
+        thread.interrupt();
+        Thread.sleep( 1000 );
+        System.out.println("end...");
     }
 }
