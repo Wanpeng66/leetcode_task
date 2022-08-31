@@ -8,8 +8,42 @@ package com.wp;
  */
 public class task_69 {
     public static void main( String[] args ) {
-        System.out.println( mySqrt( 2147395599 ) );
+        System.out.println( mySqrt2( 8 ) );
     }
+
+    public static int mySqrt2(int x) {
+        int low = 0, high = x, middle = 0;
+        while (low<=high) {
+            middle = low + (high - low)/2;
+            long val = (long) middle * middle;
+            if (val==x) {
+                return middle;
+            } else if (val<x) {
+                if ((middle+1)*(middle+1)>x) {
+                    break;
+                }
+                low = middle+1;
+            }else{
+                high = middle-1;
+            }
+        }
+        return middle;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static int mySqrt(int x) {
         if(x<=1){

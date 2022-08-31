@@ -1,6 +1,7 @@
 package com.wp;
 
 import java.util.Arrays;
+import java.util.TreeSet;
 
 /**
  * @author: wp
@@ -16,9 +17,94 @@ public class Sort {
         //insert_sort( nums );
         //selection_sort( nums );
         //merge_sort( nums );
-        quick_sort( nums );
+        //quick_sort( nums );
+        //mppx( nums );
+        //xzpx( nums );
+        //crpx( nums );
+        gbpx( nums );
         System.out.println( nums );
     }
+
+    public static void mppx(int[] nums){
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 0; j < nums.length - 1 - i; j++) {
+                if (nums[j]>nums[j+1]) {
+                    int tmp = nums[j];
+                    nums[j] = nums[j+1];
+                    nums[j+1] = tmp;
+                }
+            }
+        }
+    }
+
+    public static void xzpx(int[] nums){
+        int size = nums.length;
+        for (int i = 0; i < size; i++) {
+            int max = Integer.MIN_VALUE;
+            int offset = i;
+            for (int j = i; j < size; j++) {
+                if (nums[j]>max) {
+                    max = nums[j];
+                    offset = j;
+                }
+            }
+            nums[offset] = nums[i];
+            nums[i] = max;
+        }
+    }
+
+
+    public static void crpx(int[] nums){
+        int size = nums.length;
+        for (int i = 1; i < size; i++) {
+            int offset = i;
+            int num = nums[i];
+            for (int j = i - 1; j >= 0; j--) {
+                if (num<nums[j]) {
+                    nums[j+1] =nums[j];
+                    offset = j;
+                }else{
+                    break;
+                }
+            }
+            nums[offset] = num;
+        }
+    }
+
+
+    public static void gbpx(int[] nums){
+        int size = nums.length;
+        gbpx_split(nums, 0, size-1);
+    }
+
+    private static void gbpx_split( int[] nums, int left, int right ) {
+        if (left>=right) {
+            return;
+        }
+        int middle = (right - left) / 2 + left;
+        gbpx_split( nums, left, middle );
+        gbpx_split( nums, middle+1, right );
+        gbpx_merge(nums ,Arrays.copyOfRange( nums, left, middle+1 ), Arrays.copyOfRange( nums,middle+1, right+1 ), left);
+
+    }
+
+    private static void gbpx_merge( int[] nums, int[] leftArray, int[] rightArray, int start ) {
+        int leftOffset = 0,rightOffset = 0;
+        while (leftOffset<leftArray.length && rightOffset<rightArray.length) {
+            if (leftArray[leftOffset]<=rightArray[rightOffset]) {
+                nums[start++] = leftArray[leftOffset++];
+            }else{
+                nums[start++] = rightArray[rightOffset++];
+            }
+        }
+        while (leftOffset<leftArray.length) {
+            nums[start++] = leftArray[leftOffset++];
+        }
+        while (rightOffset<rightArray.length) {
+            nums[start++] = rightArray[rightOffset++];
+        }
+    }
+
 
     //冒泡排序 升序排列
     //原地排序 稳定算法 时间复杂度O(n*n)

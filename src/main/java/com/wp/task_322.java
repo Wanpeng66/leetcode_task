@@ -1,7 +1,6 @@
 package com.wp;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: wp
@@ -12,10 +11,38 @@ import java.util.List;
 public class task_322 {
 
     public static void main( String[] args ) {
-        System.out.println( coinChange( new int[]{2}, 3 ) );
+        System.out.println( coinChange( new int[]{2,5, 1}, 11 ) );
     }
 
-    public static int coinChange(int[] coins, int amount) {
+    public static int coinChange( int[] coins, int amount ) {
+        Map<Integer,Integer> cache = new HashMap<>();
+        return dfs(coins, cache, amount);
+    }
+
+    private static int dfs( int[] coins, Map<Integer, Integer> cache, int amount ) {
+        if (amount<0) {
+            return -1;
+        }
+        if (amount==0) {
+            return 0;
+        }
+        if (cache.containsKey( amount )) {
+            return cache.get( amount );
+        }
+        int min = Integer.MAX_VALUE;
+        for (int coin : coins) {
+            int i = amount - coin;
+            int num = dfs( coins, cache, i );
+            if (num>=0 && num<min) {
+                min = num + 1;
+            }
+        }
+        min = min == Integer.MAX_VALUE ? - 1 : min;
+        cache.put( amount,min );
+        return min;
+    }
+
+    /*public static int coinChange(int[] coins, int amount) {
         if (amount < 1) {
             return 0;
         }
@@ -86,5 +113,5 @@ public class task_322 {
             total -= coin;
             num--;
         }
-    }
+    }*/
 }
