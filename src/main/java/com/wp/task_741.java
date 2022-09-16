@@ -1,6 +1,5 @@
 package com.wp;
 
-import com.sun.imageio.plugins.gif.GIFImageReader;
 
 /**
  * @author: wp
